@@ -13,4 +13,11 @@ class SuccessHandler:
             "status": "201",
         }
         return return_data
+    
+    def success_204(self):
+        return_data = {
+            "detail": "Delete Success",
+            "status": "204",
+        }
+        return return_data
 
