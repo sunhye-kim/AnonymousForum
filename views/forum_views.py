@@ -380,8 +380,8 @@ def forum_comment():
 @forum_app.route('/alert', methods=['GET'])
 def alert_keyword():
     if request.method == 'GET':
-        forum_no = request.form.get('forum_no', default=None)
-        comment_no = request.form.get('comment_no', default=None)
+        forum_no = request.args.get('forum_no', default=None)
+        comment_no = request.args.get('comment_no', default=None)
 
         if (CheckDataType().check_integer(forum_no) and
             CheckDataType().check_integer(comment_no) ):
@@ -395,6 +395,10 @@ def alert_keyword():
             )
 
         if forum_no or comment_no:
+            if forum_no:
+                forum_no = int(forum_no)
+            elif comment_no:
+                comment_no = int(comment_no)
             pass
             
         else:

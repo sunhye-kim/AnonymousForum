@@ -46,7 +46,8 @@ def select_forum_detail(query_args):
     sql_query = """ 
         SELECT `forum_no`, `title`, `content`, `user_name`, `reg_dtime`, `modify_dtime`
         FROM `forum_main`
-        WHERE `forum_no` = %s;
+        WHERE `forum_no` = %s
+          AND `is_delete` = 0;
     """
 
     forum_detail = dict()
@@ -231,13 +232,13 @@ def select_alert_keyword(query_args):
         FROM (SELECT fm.content, ka.user_name, ka.keyword
               FROM forum_main fm cross join keyword_alert ka
               WHERE fm.forum_no = %s ) tab
-        WHERE tab.content like CONCAT('%',tab.keyword, '%')
+        WHERE tab.content like CONCAT('%%',tab.keyword, '%%')
         UNION
         SELECT tab.user_name, tab.keyword
         FROM (SELECT fc.comment_content, ka.user_name, ka.keyword
               FROM forum_comment fc cross join keyword_alert ka
               WHERE fc.comment_no = %s ) tab
-        WHERE tab.comment_content like CONCAT('%',tab.keyword, '%');
+        WHERE tab.comment_content like CONCAT('%%',tab.keyword, '%%');
     """
 
     alert_user_list = list()

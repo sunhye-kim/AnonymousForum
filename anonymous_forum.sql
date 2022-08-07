@@ -28,7 +28,7 @@ CREATE TABLE `forum_comment` (
   `forum_no` int unsigned NOT NULL COMMENT '게시글번호',
   `user_name` varchar(20) NOT NULL COMMENT '작성한유저',
   `class` tinyint unsigned NOT NULL DEFAULT '1' COMMENT '댓글계층 1:상위, 2:하위',
-  `comment_group` int unsigned NOT NULL COMMENT '상위코멘트번호',
+  `comment_group` int unsigned DEFAULT NULL COMMENT '상위코멘트번호',
   `reg_dtime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '작성일시',
   PRIMARY KEY (`comment_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -51,7 +51,7 @@ CREATE TABLE `forum_main` (
   `reg_dtime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '작성일시',
   `modify_dtime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '수정일시',
   PRIMARY KEY (`forum_no`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -67,7 +67,7 @@ CREATE TABLE `keyword_alert` (
   `keyword` varchar(40) NOT NULL COMMENT '키워드',
   `reg_dtime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '작성일시',
   PRIMARY KEY (`keyword_no`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -79,4 +79,4 @@ CREATE TABLE `keyword_alert` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-08-07 12:15:56
+-- Dump completed on 2022-08-07 23:43:47
