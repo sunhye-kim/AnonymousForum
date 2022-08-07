@@ -134,3 +134,48 @@ def forum_detail():
             ErrorHandler.error_405()
         )
 
+
+####################
+# 댓글
+####################
+@forum_api.route('/comment', methods=['GET', 'POST'])
+def forum_comment():
+    if request.method == 'GET':
+        try:
+            forum_no = request.args['forum_no']
+            offset_cnt = request.args['offset_cnt']
+            limit_cnt = request.args['limit_cnt']
+        except:
+            return jsonify(ErrorHandler.error_400())
+        
+        select_forum_comment_args = (forum_no, int(offset_cnt), int(limit_cnt), )
+        return_data = call_query.select_forum_comment(select_forum_comment_args)
+
+        return jsonify(
+            SuccessHandler.success_200(return_data)
+        )
+    
+    elif request.method == 'POST':
+        try:
+            comment_content = request.form['comment_content']
+            forum_no = request.form['forum_no']
+            user_name = request.form['user_name']
+
+        except:
+            return jsonify(ErrorHandler.error_400())
+
+        comment_group = request.form.get('comment_group', default=None)
+        reg_dtime = request.form.get('reg_dtime', default=datetime.datetime.now())
+
+        if comment_group:
+            comment_class = 2
+        else:
+            comment_class = 1
+
+        insert_forum_comment_args = (comment_content, forum_no, user_name, comment_class, comment_group, reg_dtime, )
+        call_query.insert_forum_comment(insert_forum_comment_args)
+
+        return jsonify(
+            SuccessHandler.success_201()
+        )
+

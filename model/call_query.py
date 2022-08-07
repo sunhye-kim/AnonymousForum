@@ -11,7 +11,7 @@ def select_forum_list(query_args):
     cursor = conn.cursor(pymysql.cursors.DictCursor)
 
     sql_query = """
-        SELECT `title`, `content`, `user_name`, `reg_dtime`, `modify_dtime`
+        SELECT `forum_no`, `title`, `content`, `user_name`, `reg_dtime`, `modify_dtime`
         FROM `forum_main`
         WHERE `title` = IFNULL(%s, `title`)
           AND `user_name` = IFNULL(%s, `user_name`)
@@ -41,7 +41,7 @@ def select_forum_detail(query_args):
     cursor = conn.cursor(pymysql.cursors.DictCursor)
 
     sql_query = """ 
-        SELECT `title`, `content`, `user_name`, `reg_dtime`, `modify_dtime`
+        SELECT `forum_no`, `title`, `content`, `user_name`, `reg_dtime`, `modify_dtime`
         FROM `forum_main`
         WHERE `forum_no` = %s;
     """
@@ -53,7 +53,7 @@ def select_forum_detail(query_args):
         forum_detail = cursor.fetchone()
 
     except Exception as ex:
-        msg = "Query Error, Method: insert_forum_detail , Error Message: %s" % (ex)
+        msg = "Query Error, Method: select_forum_detail , Error Message: %s" % (ex)
         print(msg)
         print("query args : {}".format(query_args))
 
@@ -142,6 +142,67 @@ def delete_forum_detail(query_args):
 
     except Exception as ex:
         msg = "Query Error, Method: delete_forum_detail , Error Message: %s" % (ex)
+        print(msg)
+        print("query args : {}".format(query_args))
+
+        return False
+
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def select_forum_comment(query_args):
+    conn = db_conn.g_pool.connection()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+    sql_query = """ 
+        SELECT `comment_no`, `comment_content`, `user_name`, `reg_dtime`,
+          (SELECT `comment_no`, `comment_content`, `user_name`, `reg_dtime`,
+            FROM `forum_comment`
+           WHERE `forum_no` = %s
+             and class = 2)
+        FROM `forum_comment`
+        WHERE `forum_no` = %s
+          and class = 1
+        LIMIT %s, %s;
+    """
+
+    forum_comment = list()
+
+    try:
+        cursor.execute(sql_query, query_args)
+        forum_comment = cursor.fetchall()
+
+    except Exception as ex:
+        msg = "Query Error, Method: select_forum_comment , Error Message: %s" % (ex)
+        print(msg)
+        print("query args : {}".format(query_args))
+
+    finally:
+        cursor.close()
+        conn.close()
+
+        return forum_comment
+
+
+def insert_forum_comment(query_args):
+    conn = db_conn.g_pool.connection()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+    sql_query = """ 
+        INSERT INTO `forum_comment` 
+            (`comment_content`, `forum_no`, `user_name`, `class`, `comment_group`, `reg_dtime`)
+        VALUES (%s, %s, %s, %s, %s, %s);
+    """
+
+    try:
+        cursor.execute(sql_query, query_args)
+
+        return True
+
+    except Exception as ex:
+        msg = "Query Error, Method: insert_forum_comment , Error Message: %s" % (ex)
         print(msg)
         print("query args : {}".format(query_args))
 
