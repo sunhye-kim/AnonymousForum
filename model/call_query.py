@@ -9,6 +9,7 @@ from config import db_conn
 def select_forum_list(query_args):
     conn = db_conn.g_pool.connection()
     cursor = conn.cursor(pymysql.cursors.DictCursor)
+    is_error = False
 
     sql_query = """
         SELECT `forum_no`, `title`, `content`, `user_name`, `reg_dtime`, `modify_dtime`
@@ -26,6 +27,7 @@ def select_forum_list(query_args):
 
     except Exception as ex:
         msg = "Query Error, Method: select_forum_list , Error Message: %s" % (ex)
+        is_error = True
         print(msg)
         print("query args : {}".format(query_args))
 
@@ -33,12 +35,13 @@ def select_forum_list(query_args):
         cursor.close()
         conn.close()
 
-        return forum_list
+        return forum_list, is_error
     
 
 def select_forum_detail(query_args):
     conn = db_conn.g_pool.connection()
     cursor = conn.cursor(pymysql.cursors.DictCursor)
+    is_error = False
 
     sql_query = """ 
         SELECT `forum_no`, `title`, `content`, `user_name`, `reg_dtime`, `modify_dtime`
@@ -54,6 +57,7 @@ def select_forum_detail(query_args):
 
     except Exception as ex:
         msg = "Query Error, Method: select_forum_detail , Error Message: %s" % (ex)
+        is_error = True
         print(msg)
         print("query args : {}".format(query_args))
 
@@ -61,12 +65,13 @@ def select_forum_detail(query_args):
         cursor.close()
         conn.close()
 
-        return forum_detail
+        return forum_detail, is_error
     
     
 def insert_forum_detail(query_args):
     conn = db_conn.g_pool.connection()
     cursor = conn.cursor(pymysql.cursors.DictCursor)
+    is_error = False
 
     sql_query = """ 
         INSERT INTO `forum_main` 
@@ -77,23 +82,24 @@ def insert_forum_detail(query_args):
     try:
         cursor.execute(sql_query, query_args)
 
-        return True
-
     except Exception as ex:
         msg = "Query Error, Method: insert_forum_detail , Error Message: %s" % (ex)
+        is_error = True
         print(msg)
         print("query args : {}".format(query_args))
 
-        return False
 
     finally:
         cursor.close()
         conn.close()
+    
+    return is_error
 
 
 def update_forum_detail(query_args):
     conn = db_conn.g_pool.connection()
     cursor = conn.cursor(pymysql.cursors.DictCursor)
+    is_error = False
 
     sql_query = """ 
         UPDATE `forum_main`
@@ -108,23 +114,23 @@ def update_forum_detail(query_args):
     try:
         cursor.execute(sql_query, query_args)
 
-        return True
-
     except Exception as ex:
         msg = "Query Error, Method: update_forum_detail , Error Message: %s" % (ex)
+        is_error = True
         print(msg)
         print("query args : {}".format(query_args))
-
-        return False
 
     finally:
         cursor.close()
         conn.close()
+
+        return is_error
     
 
 def delete_forum_detail(query_args):
     conn = db_conn.g_pool.connection()
     cursor = conn.cursor(pymysql.cursors.DictCursor)
+    is_error = False
 
     sql_query = """ 
         UPDATE `forum_main`
@@ -138,23 +144,23 @@ def delete_forum_detail(query_args):
     try:
         cursor.execute(sql_query, query_args)
 
-        return True
-
     except Exception as ex:
         msg = "Query Error, Method: delete_forum_detail , Error Message: %s" % (ex)
+        is_error = True
         print(msg)
         print("query args : {}".format(query_args))
-
-        return False
 
     finally:
         cursor.close()
         conn.close()
 
+        return is_error
+
 
 def select_forum_comment(query_args):
     conn = db_conn.g_pool.connection()
     cursor = conn.cursor(pymysql.cursors.DictCursor)
+    is_error = False
 
     sql_query = """ 
         SELECT `comment_no`, `comment_content`, `user_name`, `reg_dtime`,
@@ -176,6 +182,7 @@ def select_forum_comment(query_args):
 
     except Exception as ex:
         msg = "Query Error, Method: select_forum_comment , Error Message: %s" % (ex)
+        is_error = True
         print(msg)
         print("query args : {}".format(query_args))
 
@@ -183,12 +190,13 @@ def select_forum_comment(query_args):
         cursor.close()
         conn.close()
 
-        return forum_comment
+        return forum_comment, is_error
 
 
 def insert_forum_comment(query_args):
     conn = db_conn.g_pool.connection()
     cursor = conn.cursor(pymysql.cursors.DictCursor)
+    is_error = False
 
     sql_query = """ 
         INSERT INTO `forum_comment` 
@@ -199,23 +207,23 @@ def insert_forum_comment(query_args):
     try:
         cursor.execute(sql_query, query_args)
 
-        return True
-
     except Exception as ex:
         msg = "Query Error, Method: insert_forum_comment , Error Message: %s" % (ex)
+        is_error = True
         print(msg)
         print("query args : {}".format(query_args))
-
-        return False
 
     finally:
         cursor.close()
         conn.close()
 
+        return is_error
+
 
 def select_alert_keyword(query_args):
     conn = db_conn.g_pool.connection()
     cursor = conn.cursor(pymysql.cursors.DictCursor)
+    is_error = False
 
     sql_query = """ 
         SELECT tab.user_name, tab.keyword
@@ -239,6 +247,7 @@ def select_alert_keyword(query_args):
 
     except Exception as ex:
         msg = "Query Error, Method: select_alert_keyword , Error Message: %s" % (ex)
+        is_error = True
         print(msg)
         print("query args : {}".format(query_args))
 
@@ -246,5 +255,5 @@ def select_alert_keyword(query_args):
         cursor.close()
         conn.close()
 
-        return alert_user_list
+        return alert_user_list, is_error
 
