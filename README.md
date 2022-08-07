@@ -10,26 +10,27 @@ $ python -v
 ```
 
 ### 2. mysql 버전 확인 (mysql 쿼리로 확인)
+###### localhost 에 mysql 이 필요함.
 ```
 SELECT version(); -- 8.0.29
 ```
 
-### 2. 필요한 패키지 설치
+### 3. 필요한 패키지 설치
 ```
 $ pip3 install -r requirements.txt
 ```
 
-### 3. mysqldump 테이블 구조 복구하기
+### 4. mysqldump 테이블 구조 복구하기
 ```
 $ mysql -u -p anonymous_forum < anonymous_forum.sql
 ```
 
-### 4. API 실행하기
+### 5. API 실행하기
 ```
 $ python3 manage.py
 ```
 
-### 5. API 주소는 로컬 호스트로 생성
+### 6. API 주소는 로컬 호스트로 생성
 ```
 http://127.0.0.1:5000/
 ```
