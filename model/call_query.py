@@ -163,14 +163,15 @@ def select_forum_comment(query_args):
     is_error = False
 
     sql_query = """ 
-        SELECT `comment_no`, `comment_content`, `user_name`, `reg_dtime`,
-          (SELECT `comment_no`, `comment_content`, `user_name`, `reg_dtime`,
-            FROM `forum_comment`
-           WHERE `forum_no` = %s
-             and class = 2)
-        FROM `forum_comment`
-        WHERE `forum_no` = %s
-          and class = 1
+        SELECT fc1.`comment_no`, fc1.`comment_content`, fc1.`user_name`, fc1.`reg_dtime`,
+       CONCAT('[',GROUP_CONCAT(CONCAT('{"user_name":"',fc2.user_name,'", "comment" : "',fc2.comment_content,'"}')),']') as `re_comment`
+        FROM `forum_comment` fc1
+          LEFT OUTER JOIN `forum_comment` fc2
+          ON fc1.forum_no = fc2.forum_no 
+          AND fc1.comment_no = fc2.comment_group
+        WHERE fc1.`forum_no` = %s
+          AND fc1.class = 1
+		GROUP BY fc1.comment_no 
         LIMIT %s, %s;
     """
 

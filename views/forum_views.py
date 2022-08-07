@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 import datetime
@@ -24,19 +25,19 @@ def test():
 
 class CheckDataType:
     def check_integer(self, param):
-        if isinstance(param, int):
+        if not param or isinstance(int(param), int):
             return True
         else:
             return False
     
     def check_string(self, param):
-        if isinstance(param, str):
+        if not param or isinstance(param, str):
             return True
         else:
             return False
     
     def check_datetime(self, param):
-        if isinstance(param, datetime):
+        if not param or isinstance(param, datetime.datetime):
             return True
         else:
             return False
@@ -57,21 +58,21 @@ def board():
                 ErrorHandler.error_400()
             )
         
-        title = request.args.get('title', default=None, type=str)
-        write_user = request.args.get('write_user', default=None, type=str)
+        title = request.args.get('title', default=None)
+        write_user = request.args.get('write_user', default=None)
 
         if (CheckDataType().check_integer(offset_cnt) and 
             CheckDataType().check_integer(limit_cnt) and
             CheckDataType().check_string(title) and
             CheckDataType().check_string(write_user)):
             pass
+
         else:
             print(traceback.format_exc())
             
             return jsonify(
                 ErrorHandler.error_400()
             )
-
 
         try:
             select_forum_data_args = (title, write_user, int(offset_cnt), int(limit_cnt), )
@@ -296,12 +297,20 @@ def forum_comment():
             )
 
         try:
-            select_forum_comment_args = (forum_no, int(offset_cnt), int(limit_cnt), )
+            select_forum_comment_args = (int(forum_no), int(offset_cnt), int(limit_cnt), )
             return_data, is_error = call_query.select_forum_comment(select_forum_comment_args)
 
             if is_error:
                 raise Exception
-        
+            
+            for _return_data in return_data:
+                for key, value in _return_data.items():
+                    if key == 're_comment':
+                        if value:
+                            _return_data[key] = json.loads(value)
+                        else:
+                            _return_data[key] = list()
+
         except Exception as ex:
             print(traceback.format_exc())
 
