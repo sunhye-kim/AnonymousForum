@@ -1,3 +1,6 @@
+from ast import keyword
+import json
+from msilib.schema import Error
 import os
 import sys
 import datetime
@@ -177,5 +180,37 @@ def forum_comment():
 
         return jsonify(
             SuccessHandler.success_201()
+        )
+    else:
+        return jsonify(
+            ErrorHandler.error_405()
+        )
+
+
+####################
+# 키워드 알림 기능
+####################
+@forum_api.route('/alert', methods=['GET'])
+def alert_keyword():
+    if request.method == 'GET':
+        forum_no = request.form.get('forum_no', default=None)
+        comment_no = request.form.get('comment_no', default=None)
+
+        if forum_no or comment_no:
+            select_alert_keyword_args = (forum_no, comment_no, )
+
+            return_data = call_query.select_alert_keyword(select_alert_keyword_args)
+
+            return jsonify(
+                SuccessHandler.success_200(return_data)
+            )
+        else:
+            return jsonify(
+                ErrorHandler.error_400()
+            )
+
+    else:
+        return jsonify(
+            ErrorHandler.error_405()
         )
 

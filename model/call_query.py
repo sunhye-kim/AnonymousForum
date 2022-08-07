@@ -211,3 +211,40 @@ def insert_forum_comment(query_args):
     finally:
         cursor.close()
         conn.close()
+
+
+def select_alert_keyword(query_args):
+    conn = db_conn.g_pool.connection()
+    cursor = conn.cursor(pymysql.cursors.DictCursor)
+
+    sql_query = """ 
+        SELECT tab.user_name, tab.keyword
+        FROM (SELECT fm.content, ka.user_name, ka.keyword
+              FROM forum_main fm cross join keyword_alert ka
+              WHERE fm.forum_no = %s ) tab
+        WHERE tab.content like CONCAT('%',tab.keyword, '%')
+        UNION
+        SELECT tab.user_name, tab.keyword
+        FROM (SELECT fc.comment_content, ka.user_name, ka.keyword
+              FROM forum_comment fc cross join keyword_alert ka
+              WHERE fc.comment_no = %s ) tab
+        WHERE tab.comment_content like CONCAT('%',tab.keyword, '%');
+    """
+
+    alert_user_list = list()
+
+    try:
+        cursor.execute(sql_query, query_args)
+        alert_user_list = cursor.fetchall()
+
+    except Exception as ex:
+        msg = "Query Error, Method: select_alert_keyword , Error Message: %s" % (ex)
+        print(msg)
+        print("query args : {}".format(query_args))
+
+    finally:
+        cursor.close()
+        conn.close()
+
+        return alert_user_list
+
